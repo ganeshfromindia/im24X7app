@@ -16,29 +16,29 @@ export default function TabTwoScreen() {
 
       if (available && biometryType === BiometryTypes.TouchID) {
         console.log("TouchID is supported");
-        Alert.alert("TouchID is supported", "TouchID is supported", [
-          {
-            text: "Cancel",
-            onPress: () => console.log("Cancel Pressed"),
-          },
-        ]);
+        //         Alert.alert("TouchID is supported", "TouchID is supported", [
+        //           {
+        //             text: "Cancel",
+        //             onPress: () => console.log("Cancel Pressed"),
+        //           },
+        //         ]);
         return true;
       } else if (available && biometryType === BiometryTypes.FaceID) {
         console.log("FaceID is supported");
-        Alert.alert("FaceID is supported", "FaceID is supported", [
-          {
-            text: "Cancel",
-            onPress: () => console.log("Cancel Pressed"),
-          },
-        ]);
+        //         Alert.alert("FaceID is supported", "FaceID is supported", [
+        //           {
+        //             text: "Cancel",
+        //             onPress: () => console.log("Cancel Pressed"),
+        //           },
+        //         ]);
         return true;
       } else if (available && biometryType === BiometryTypes.Biometrics) {
-        Alert.alert("Biometrics  supported", "Biometrics  supported", [
-          {
-            text: "Cancel",
-            onPress: () => console.log("Cancel Pressed"),
-          },
-        ]);
+        //         Alert.alert("Biometrics  supported", "Biometrics  supported", [
+        //           {
+        //             text: "Cancel",
+        //             onPress: () => console.log("Cancel Pressed"),
+        //           },
+        //         ]);
         console.log("Biometrics is supported");
         return true;
       } else {
@@ -80,7 +80,6 @@ export default function TabTwoScreen() {
 
     const deleteKeys = async () => {
       const { keysDeleted } = await rnBiometrics.deleteKeys();
-      console.log("key deleted", keysDeleted);
     };
     await deleteKeys();
     const { keysExist } = await rnBiometrics.biometricKeysExist();
@@ -102,22 +101,24 @@ export default function TabTwoScreen() {
         {
           "Content-Type": "application/json",
         },
-      ).catch((error: any) => console.log(error));
+      );
     }
 
     const { success, signature } = await rnBiometrics.createSignature({
       promptMessage: "Sign in",
-      payload: JSON.stringify(payload),
+      payload: JSON.stringify(payload.payloadId),
     });
     let response1;
     if (success) {
-      console.log(signature);
+      console.log("test sign", signature);
+      console.log("test payload", payload.payloadId);
+      console.log("userName", userName);
       response1 = await sendRequest(
         `https://93b6-115-98-232-57.ngrok-free.app/api/users/loginBiometrics`,
         "POST",
         JSON.stringify({
           signature: signature,
-          payload: payload,
+          payload: payload.payloadId,
           userName: userName,
         }),
         {
@@ -156,12 +157,7 @@ export default function TabTwoScreen() {
         <ThemedView style={styles.container1}>
           <TouchableOpacity onPress={handleBioMetricAuthentication}>
             <ThemedText
-              style={[
-                styles.buttonText,
-                styles.button,
-                styles.submitButtonText,
-                styles.container,
-              ]}
+              style={[styles.button, styles.submitButtonText, styles.container]}
             >
               Bio Metric Authentication
             </ThemedText>
@@ -176,7 +172,7 @@ const styles = StyleSheet.create({
   container: {
     paddingHorizontal: 20,
     paddingVertical: 20,
-    marginHorizontal: 80,
+    marginHorizontal: 10,
     marginVertical: 20,
   },
   container1: {
@@ -190,19 +186,14 @@ const styles = StyleSheet.create({
     paddingHorizontal: 10,
     width: "100%",
   },
-  buttonText: {
-    cursor: "pointer",
-    textDecorationLine: "none",
-    fontSize: 12,
-    textAlign: "center",
-    lineHeight: 17,
-  },
+
   submitButtonText: {
     color: "#212121",
     cursor: "pointer",
     textDecorationLine: "none",
     fontSize: 15,
     textAlign: "center",
+    lineHeight: 17,
   },
   headerImage: {
     color: "#808080",
