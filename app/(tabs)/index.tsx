@@ -13,7 +13,7 @@ export default function HomeScreen() {
   useFocusEffect(
     useCallback(() => {
       auth.getUserData().then((res: any) => {
-        console.log("in index", res);
+
         setUpdatedData(res);
       });
 

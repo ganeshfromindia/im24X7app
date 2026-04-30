@@ -45,13 +45,13 @@ const useAuth = () => {
       tag: string | null,
     ) => {
       dataPost.push({ id: id, name: name, location: location, tag: tag });
-      console.log("postuserdata", dataPost);
+
       setData(prevData => [...prevData, dataPost]);
     },
     [],
   );
   const getUserData = useCallback(async () => {
-    console.log("getuserData", data);
+
     return data;
   }, []);
 

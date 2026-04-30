@@ -69,7 +69,7 @@ export default function TabTwoScreen() {
 
   const handleBioMetricAuthentication = async () => {
     const payload = await sendRequest(
-      `https://0c9e-115-98-235-124.ngrok-free.app/api/users/generatePayLoad`,
+      `https://ca1d-115-98-235-124.ngrok-free.app/api/users/generatePayLoad`,
       "GET",
     );
     let keysAlreadyExist: any;
@@ -95,7 +95,7 @@ export default function TabTwoScreen() {
       keysAlreadyExist = publicKey;
       console.log(publicKey);
       const response = await sendRequest(
-        `https://0c9e-115-98-235-124.ngrok-free.app/api/users/addPublicKey`,
+        `https://ca1d-115-98-235-124.ngrok-free.app/api/users/addPublicKey`,
         "POST",
         JSON.stringify({ publicKey: publicKey, userName: userName }),
         {
@@ -114,7 +114,7 @@ export default function TabTwoScreen() {
       console.log("test payload", payload.payloadId);
       console.log("userName", userName);
       response1 = await sendRequest(
-        `https://0c9e-115-98-235-124.ngrok-free.app/api/users/loginBiometrics`,
+        `https://ca1d-115-98-235-124.ngrok-free.app/api/users/loginBiometrics`,
         "POST",
         JSON.stringify({
           signature: signature,

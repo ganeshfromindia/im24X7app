@@ -23,7 +23,16 @@ interface UserDataType {
   ) => void;
 }
 
-export const AuthContext = createContext<data | any>(undefined);
+export const AuthContext = createContext<data | any>({
+  data: {
+    id: 0,
+    name: "",
+    location: "",
+    tag: "",
+    postUserData: () => {},
+    getUserData: () => {},
+  },
+});
 // export const AuthContext = createContext<UserDataType>({  id: 0,
 //   name: "",
 //   location: "",
