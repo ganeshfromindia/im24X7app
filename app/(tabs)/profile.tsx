@@ -10,11 +10,25 @@ interface UserDataType {
   name: string;
   location: string;
   tag: string;
+  postUserData: (
+    id: number | null,
+    name: string | null,
+    location: string | null,
+    tag: string | null,
+  ) => void;
+  getUserData: (
+    id: number | null,
+    name: string | null,
+    location: string | null,
+    tag: string | null,
+  ) => void;
+}
+interface data {
+  data: UserDataType[];
 }
 export default function TabTwoScreen() {
-  const auth: UserDataType = useContext(AuthContext);
+  const auth: data = useContext(AuthContext);
 
-  console.log("data", auth.id);
   return (
     <ThemedView style={styles.titleContainer}>
       <ThemedView style={styles.titleContainer}>
@@ -22,9 +36,13 @@ export default function TabTwoScreen() {
           type="title"
           style={{
             fontFamily: Fonts.rounded,
+            fontSize: 25,
+            marginHorizontal: 5,
+            textAlign: "center",
           }}
         >
-          Name of Owner {auth.name} and location is {auth.location}
+          Name of Owner {auth.data[0].name} and location is{" "}
+          {auth.data[0].location}
         </ThemedText>
       </ThemedView>
     </ThemedView>
@@ -41,5 +59,6 @@ const styles = StyleSheet.create({
   titleContainer: {
     flexDirection: "row",
     gap: 8,
+    marginTop: 20,
   },
 });

@@ -1,112 +1,114 @@
-import { Image } from 'expo-image';
-import { Platform, StyleSheet } from 'react-native';
-
-import { Collapsible } from '@/components/ui/collapsible';
-import { ExternalLink } from '@/components/external-link';
-import ParallaxScrollView from '@/components/parallax-scroll-view';
-import { ThemedText } from '@/components/themed-text';
-import { ThemedView } from '@/components/themed-view';
-import { IconSymbol } from '@/components/ui/icon-symbol';
-import { Fonts } from '@/constants/theme';
-
+import { ThemedText } from "@/components/themed-text";
+import { ThemedView } from "@/components/themed-view";
+import { AuthContext } from "@/store/auth-context";
+import React, { useContext, useEffect, useState } from "react";
+import { StyleSheet, TextInput, TouchableOpacity } from "react-native";
+interface UserDataType {
+  id: number;
+  name: string;
+  location: string;
+  tag: string;
+  postUserData: (
+    id: number | null,
+    name: string | null,
+    location: string | null,
+    tag: string | null,
+  ) => void;
+  getUserData: (
+    id: number | null,
+    name: string | null,
+    location: string | null,
+    tag: string | null,
+  ) => void;
+}
+interface data {
+  data: UserDataType;
+}
 export default function TabTwoScreen() {
+  const [userName, setUserName] = useState("");
+  const [location, setLocation] = useState("");
+  const [updatedData, setUpdatedData] = useState<any[]>([]);
+  const auth: data | any = useContext(AuthContext);
+  let updated: any[];
+  useEffect(() => {
+    const getData = async () => {
+      updated = await auth.getUserData();
+      setUpdatedData(updated);
+    };
+    getData();
+    return () => {};
+  }, [auth]);
+  const handleChangeNameLocation = () => {
+    updatedData.map((data: any) =>
+      auth.postUserData(data.id, userName, location, data.tag),
+    );
+  };
   return (
-    <ParallaxScrollView
-      headerBackgroundColor={{ light: '#D0D0D0', dark: '#353636' }}
-      headerImage={
-        <IconSymbol
-          size={310}
-          color="#808080"
-          name="chevron.left.forwardslash.chevron.right"
-          style={styles.headerImage}
+    <ThemedView style={styles.titleContainer}>
+      <ThemedView style={styles.container}>
+        <TextInput
+          style={styles.input}
+          placeholder="Enter your name"
+          value={userName}
+          onChangeText={(text) => setUserName(text)} // Updates state with every keystroke
         />
-      }>
-      <ThemedView style={styles.titleContainer}>
-        <ThemedText
-          type="title"
-          style={{
-            fontFamily: Fonts.rounded,
-          }}>
-          Explore
-        </ThemedText>
+        <TextInput
+          style={styles.input}
+          placeholder="Enter your location"
+          value={location}
+          onChangeText={(text) => setLocation(text)} // Updates state with every keystroke
+        />
       </ThemedView>
-      <ThemedText>This app includes example code to help you get started.</ThemedText>
-      <Collapsible title="File-based routing">
-        <ThemedText>
-          This app has two screens:{' '}
-          <ThemedText type="defaultSemiBold">app/(tabs)/index.tsx</ThemedText> and{' '}
-          <ThemedText type="defaultSemiBold">app/(tabs)/explore.tsx</ThemedText>
-        </ThemedText>
-        <ThemedText>
-          The layout file in <ThemedText type="defaultSemiBold">app/(tabs)/_layout.tsx</ThemedText>{' '}
-          sets up the tab navigator.
-        </ThemedText>
-        <ExternalLink href="https://docs.expo.dev/router/introduction">
-          <ThemedText type="link">Learn more</ThemedText>
-        </ExternalLink>
-      </Collapsible>
-      <Collapsible title="Android, iOS, and web support">
-        <ThemedText>
-          You can open this project on Android, iOS, and the web. To open the web version, press{' '}
-          <ThemedText type="defaultSemiBold">w</ThemedText> in the terminal running this project.
-        </ThemedText>
-      </Collapsible>
-      <Collapsible title="Images">
-        <ThemedText>
-          For static images, you can use the <ThemedText type="defaultSemiBold">@2x</ThemedText> and{' '}
-          <ThemedText type="defaultSemiBold">@3x</ThemedText> suffixes to provide files for
-          different screen densities
-        </ThemedText>
-        <Image
-          source={require('@/assets/images/react-logo.png')}
-          style={{ width: 100, height: 100, alignSelf: 'center' }}
-        />
-        <ExternalLink href="https://reactnative.dev/docs/images">
-          <ThemedText type="link">Learn more</ThemedText>
-        </ExternalLink>
-      </Collapsible>
-      <Collapsible title="Light and dark mode components">
-        <ThemedText>
-          This template has light and dark mode support. The{' '}
-          <ThemedText type="defaultSemiBold">useColorScheme()</ThemedText> hook lets you inspect
-          what the user&apos;s current color scheme is, and so you can adjust UI colors accordingly.
-        </ThemedText>
-        <ExternalLink href="https://docs.expo.dev/develop/user-interface/color-themes/">
-          <ThemedText type="link">Learn more</ThemedText>
-        </ExternalLink>
-      </Collapsible>
-      <Collapsible title="Animations">
-        <ThemedText>
-          This template includes an example of an animated component. The{' '}
-          <ThemedText type="defaultSemiBold">components/HelloWave.tsx</ThemedText> component uses
-          the powerful{' '}
-          <ThemedText type="defaultSemiBold" style={{ fontFamily: Fonts.mono }}>
-            react-native-reanimated
-          </ThemedText>{' '}
-          library to create a waving hand animation.
-        </ThemedText>
-        {Platform.select({
-          ios: (
-            <ThemedText>
-              The <ThemedText type="defaultSemiBold">components/ParallaxScrollView.tsx</ThemedText>{' '}
-              component provides a parallax effect for the header image.
-            </ThemedText>
-          ),
-        })}
-      </Collapsible>
-    </ParallaxScrollView>
+      <ThemedView style={styles.container1}>
+        <TouchableOpacity onPress={handleChangeNameLocation}>
+          <ThemedText
+            style={[styles.button, styles.submitButtonText, styles.container]}
+          >
+            Save
+          </ThemedText>
+        </TouchableOpacity>
+      </ThemedView>
+    </ThemedView>
   );
 }
 
 const styles = StyleSheet.create({
   headerImage: {
-    color: '#808080',
+    color: "#808080",
     bottom: -90,
     left: -35,
-    position: 'absolute',
+    position: "absolute",
   },
+  input: { height: 40, borderBottomWidth: 1, marginBottom: 20 },
+  container: {
+    paddingHorizontal: 20,
+    paddingVertical: 20,
+    marginHorizontal: 10,
+    marginVertical: 20,
+  },
+  container1: {
+    paddingHorizontal: 20,
+    paddingVertical: 20,
+    marginHorizontal: "auto",
+    marginVertical: 20,
+  },
+  button: {
+    paddingVertical: 10,
+    paddingHorizontal: 10,
+    width: "100%",
+  },
+
+  submitButtonText: {
+    color: "#212121",
+    cursor: "pointer",
+    textDecorationLine: "none",
+    fontSize: 15,
+    textAlign: "center",
+    lineHeight: 17,
+  },
+
   titleContainer: {
-    flexDirection: 'row',
+    flexDirection: "column",
     gap: 8,
   },
 });

@@ -1,38 +1,67 @@
 import { ThemedText } from "@/components/themed-text";
 import { ThemedView } from "@/components/themed-view";
 import { AuthContext } from "@/store/auth-context";
-import React, { useContext } from "react";
+import { useFocusEffect } from "@react-navigation/native";
+import React, { useCallback, useContext, useState } from "react";
 import { FlatList, StyleSheet } from "react-native";
 export default function HomeScreen() {
   const auth = useContext(AuthContext);
-  let data: any[] = [];
-  data.length = 250;
-  let dataObj = { id: 1, name: "Harsh", location: "India", tag: "Developer" };
-  data.fill(dataObj, 0, 250);
-  const updatedData: any[] = data.map((item, index) => ({
-    ...item,
-    id: index,
-    name: item.name + " " + (index + 1),
-  }));
-  updatedData.forEach((data: any) =>
-    auth.userData(data.id, data.name, data.location, data.tag),
+  let updated: any[];
+
+  const [updatedData, setUpdatedData] = useState<any[]>();
+
+  useFocusEffect(
+    useCallback(() => {
+      auth.getUserData().then((res: any) => {
+        console.log("in index", res);
+        setUpdatedData(res);
+      });
+
+      // Fetch data or perform initialization logic when the screen is focused
+    }, []),
   );
+  //   useFocusEffect(
+  //     useCallback(async () => {
+  //     updated = await auth.getUserData();
+  //     setUpdatedData(updated);
+  //  },[auth]),);
+  // const getContxtData = async () => {
+  //   updated = await auth.getUserData();
+  //   setUpdatedData(updated);
+  // };
+  // getContxtData();
+  // useEffect(() => {
+  //   const getData = async () => {
+  //     updated = await auth.getUserData();
+  //     setUpdatedData(updated);
+  //   };
+  //   getData();
+  //   return () => {};
+  // }, [auth]);
+
   return (
-    <FlatList
-      data={updatedData}
-      renderItem={({ item }) => (
-        <ThemedView style={styles.listContainer}>
-          <ThemedText type="subtitle">{item.name}</ThemedText>
-          <ThemedText type="subtitle">{item.location}</ThemedText>
-          <ThemedText type="subtitle">{item.tag}</ThemedText>
-        </ThemedView>
+    <ThemedView style={styles.Container}>
+      {updatedData && (
+        <FlatList
+          data={updatedData}
+          renderItem={({ item }) => (
+            <ThemedView style={styles.listContainer}>
+              <ThemedText type="subtitle">{item.name}</ThemedText>
+              <ThemedText type="subtitle">{item.location}</ThemedText>
+              <ThemedText type="subtitle">{item.tag}</ThemedText>
+            </ThemedView>
+          )}
+          keyExtractor={(item) => item.id}
+        />
       )}
-      keyExtractor={(item) => item.id}
-    />
+    </ThemedView>
   );
 }
 
 const styles = StyleSheet.create({
+  Container: {
+    paddingVertical: 35,
+  },
   listContainer: {
     flexDirection: "row",
     alignItems: "center",

@@ -17,7 +17,8 @@ export default function RootLayout() {
         location,
         tag,
         data,
-        userData
+        postUserData,
+        getUserData
 
       } = useAuth();
   const colorScheme = useColorScheme();
@@ -27,7 +28,8 @@ export default function RootLayout() {
      <AuthContext.Provider
             value={{
               data: data,
-              userData: userData
+              getUserData: getUserData,
+              postUserData: postUserData
             }}
           >
       <Stack>
