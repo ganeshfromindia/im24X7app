@@ -1,4 +1,10 @@
-import { Alert, StyleSheet, TextInput, TouchableOpacity, useColorScheme } from "react-native";
+import {
+  Alert,
+  StyleSheet,
+  TextInput,
+  TouchableOpacity,
+  useColorScheme,
+} from "react-native";
 
 import { ThemedText } from "@/components/themed-text";
 import { ThemedView } from "@/components/themed-view";
@@ -6,7 +12,7 @@ import useHttpClient from "@/hooks/http-hook";
 import React, { useState } from "react";
 import ReactNativeBiometrics, { BiometryTypes } from "react-native-biometrics";
 export default function TabTwoScreen() {
-  const isDarkMode = useColorScheme() === 'dark';
+  const isDarkMode = useColorScheme() === "dark";
   const { isLoading, error, sendRequest, clearError } = useHttpClient();
   const [userName, setUserName] = useState("");
   const rnBiometrics = new ReactNativeBiometrics();
@@ -149,10 +155,11 @@ export default function TabTwoScreen() {
       <ThemedView style={styles.container}>
         <TextInput
           style={{
-            color: isDarkMode ? 'white' : 'black',
-            backgroundColor: isDarkMode ? '#222' : '#eee',
+            padding: 10,
+            color: isDarkMode ? "white" : "black",
+            backgroundColor: isDarkMode ? "#222" : "#eee",
           }}
-		  placeholderTextColor={isDarkMode ? '#aaa' : '#666'}
+          placeholderTextColor={isDarkMode ? "#aaa" : "#666"}
           placeholder="Enter your name"
           value={userName}
           onChangeText={(text) => setUserName(text)} // Updates state with every keystroke
@@ -190,6 +197,9 @@ const styles = StyleSheet.create({
     paddingVertical: 10,
     paddingHorizontal: 10,
     width: "100%",
+    borderWidth: 1,
+    borderColor: "#ccc",
+    borderRadius: 5,
   },
 
   submitButtonText: {
