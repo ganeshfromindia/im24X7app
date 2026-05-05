@@ -1,25 +1,29 @@
 import { ThemedText } from "@/components/themed-text";
 import { ThemedView } from "@/components/themed-view";
-import { AuthContext } from "@/store/auth-context";
+import { useUser } from "@/store/auth-context";
 import { useFocusEffect } from "@react-navigation/native";
-import React, { useCallback, useContext, useState } from "react";
+import React, { useCallback, useState, useEffect, useLayoutEffect } from "react";
 import { FlatList, StyleSheet } from "react-native";
+import { useIsFocused } from '@react-navigation/native';
+
 export default function HomeScreen() {
-  const auth = useContext(AuthContext);
+	const isFocused = useIsFocused();
+  const { getUserData, data } = useUser();
   let updated: any[];
 
   const [updatedData, setUpdatedData] = useState<any[]>();
 
-  useFocusEffect(
-    useCallback(() => {
-      auth.getUserData().then((res: any) => {
+ useEffect(() => {
 
-        setUpdatedData(res);
-      });
+setUpdatedData(data)
+//       getUserData().then((res: any) => {
+// 		  console.log("res", res)
+//         setUpdatedData(res);
+//       })
+  },[isFocused])
 
-      // Fetch data or perform initialization logic when the screen is focused
-    }, []),
-  );
+
+
   //   useFocusEffect(
   //     useCallback(async () => {
   //     updated = await auth.getUserData();

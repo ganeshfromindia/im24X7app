@@ -4,7 +4,7 @@ import { Fonts } from "@/constants/theme";
 import React, { useContext } from "react";
 import { StyleSheet } from "react-native";
 
-import { AuthContext } from "@/store/auth-context";
+import { useUser } from "@/store/auth-context";
 interface UserDataType {
   id: number;
   name: string;
@@ -27,7 +27,7 @@ interface data {
   data: UserDataType[];
 }
 export default function TabTwoScreen() {
-  const auth: data = useContext(AuthContext);
+ const { data } = useUser()
 
   return (
     <ThemedView style={styles.titleContainer}>
@@ -41,8 +41,8 @@ export default function TabTwoScreen() {
             textAlign: "center",
           }}
         >
-          Name of Owner {auth.data[0].name} and location is{" "}
-          {auth.data[0].location}
+          Name of Owner {data[0].name} and location is{" "}
+          {data[0].location}
         </ThemedText>
       </ThemedView>
     </ThemedView>

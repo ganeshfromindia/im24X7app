@@ -25,11 +25,7 @@ export default function TabLayout() {
             options={{
               title: "Login",
               tabBarIcon: ({ color }) => (
-                <IconSymbol
-                  size={28}
-                  name="gearshape.circle.fill"
-                  color={color}
-                />
+                <IconSymbol size={28} name="paperplane.fill" color={color} />
               ),
             }}
           />
@@ -47,11 +43,7 @@ export default function TabLayout() {
             options={{
               title: "Settings",
               tabBarIcon: ({ color }) => (
-                <IconSymbol
-                  size={28}
-                  name="gearshape.circle.fill"
-                  color={color}
-                />
+                <IconSymbol size={28} name="gearshape" color={color} />
               ),
             }}
           />
@@ -60,7 +52,7 @@ export default function TabLayout() {
             options={{
               title: "Profile",
               tabBarIcon: ({ color }) => (
-                <IconSymbol size={28} name="ant.circle.fill" color={color} />
+                <IconSymbol size={28} name="u.square" color={color} />
               ),
             }}
           />

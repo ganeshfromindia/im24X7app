@@ -1,4 +1,4 @@
-import { Alert, StyleSheet, TextInput, TouchableOpacity } from "react-native";
+import { Alert, StyleSheet, TextInput, TouchableOpacity, useColorScheme } from "react-native";
 
 import { ThemedText } from "@/components/themed-text";
 import { ThemedView } from "@/components/themed-view";
@@ -6,6 +6,7 @@ import useHttpClient from "@/hooks/http-hook";
 import React, { useState } from "react";
 import ReactNativeBiometrics, { BiometryTypes } from "react-native-biometrics";
 export default function TabTwoScreen() {
+  const isDarkMode = useColorScheme() === 'dark';
   const { isLoading, error, sendRequest, clearError } = useHttpClient();
   const [userName, setUserName] = useState("");
   const rnBiometrics = new ReactNativeBiometrics();
@@ -69,7 +70,7 @@ export default function TabTwoScreen() {
 
   const handleBioMetricAuthentication = async () => {
     const payload = await sendRequest(
-      `https://ca1d-115-98-235-124.ngrok-free.app/api/users/generatePayLoad`,
+      `https://d6d0-60-254-0-230.ngrok-free.app/api/users/generatePayLoad`,
       "GET",
     );
     let keysAlreadyExist: any;
@@ -95,7 +96,7 @@ export default function TabTwoScreen() {
       keysAlreadyExist = publicKey;
       console.log(publicKey);
       const response = await sendRequest(
-        `https://ca1d-115-98-235-124.ngrok-free.app/api/users/addPublicKey`,
+        `https://d6d0-60-254-0-230.ngrok-free.app/api/users/addPublicKey`,
         "POST",
         JSON.stringify({ publicKey: publicKey, userName: userName }),
         {
@@ -114,7 +115,7 @@ export default function TabTwoScreen() {
       console.log("test payload", payload.payloadId);
       console.log("userName", userName);
       response1 = await sendRequest(
-        `https://ca1d-115-98-235-124.ngrok-free.app/api/users/loginBiometrics`,
+        `https://d6d0-60-254-0-230.ngrok-free.app/api/users/loginBiometrics`,
         "POST",
         JSON.stringify({
           signature: signature,
@@ -147,7 +148,11 @@ export default function TabTwoScreen() {
     <ThemedView style={styles.titleContainer}>
       <ThemedView style={styles.container}>
         <TextInput
-          style={styles.input}
+          style={{
+            color: isDarkMode ? 'white' : 'black',
+            backgroundColor: isDarkMode ? '#222' : '#eee',
+          }}
+		  placeholderTextColor={isDarkMode ? '#aaa' : '#666'}
           placeholder="Enter your name"
           value={userName}
           onChangeText={(text) => setUserName(text)} // Updates state with every keystroke
@@ -188,7 +193,6 @@ const styles = StyleSheet.create({
   },
 
   submitButtonText: {
-    color: "#212121",
     cursor: "pointer",
     textDecorationLine: "none",
     fontSize: 15,

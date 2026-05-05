@@ -35,6 +35,8 @@ const useAuth = () => {
   //
   useEffect(() => {
     getUserData();
+
+    return () => {};
   }, [data]);
 
   const postUserData = useCallback(
@@ -46,12 +48,11 @@ const useAuth = () => {
     ) => {
       dataPost.push({ id: id, name: name, location: location, tag: tag });
 
-      setData(prevData => [...prevData, dataPost]);
+      setData((prevData) => [...prevData, dataPost]);
     },
     [],
   );
   const getUserData = useCallback(async () => {
-
     return data;
   }, []);
 

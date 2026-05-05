@@ -1,8 +1,8 @@
 import { ThemedText } from "@/components/themed-text";
 import { ThemedView } from "@/components/themed-view";
-import { AuthContext } from "@/store/auth-context";
+import { useUser } from "@/store/auth-context";
 import React, { useContext, useEffect, useState } from "react";
-import { StyleSheet, TextInput, TouchableOpacity } from "react-native";
+import { StyleSheet, TextInput, TouchableOpacity, useColorScheme } from "react-native";
 interface UserDataType {
   id: number;
   name: string;
@@ -25,35 +25,49 @@ interface data {
   data: UserDataType;
 }
 export default function TabTwoScreen() {
+  const isDarkMode = useColorScheme() === 'dark';
   const [userName, setUserName] = useState("");
   const [location, setLocation] = useState("");
   const [updatedData, setUpdatedData] = useState<any[]>([]);
-  const auth: data | any = useContext(AuthContext);
+  const { getUserData, postUserData } = useUser()
   let updated: any[];
   useEffect(() => {
     const getData = async () => {
-      updated = await auth.getUserData();
+      updated = await getUserData();
       setUpdatedData(updated);
     };
     getData();
     return () => {};
-  }, [auth]);
+  }, []);
   const handleChangeNameLocation = () => {
-    updatedData.map((data: any) =>
-      auth.postUserData(data.id, userName, location, data.tag),
-    );
+    let dataToPost = updatedData.map((item, index) => ({
+                                        ...item,
+                                        id: index,
+                                        name: userName,
+                                        location: location
+                                      }))
+      postUserData(dataToPost)
+
   };
   return (
     <ThemedView style={styles.titleContainer}>
       <ThemedView style={styles.container}>
         <TextInput
-          style={styles.input}
+         style={{
+            color: isDarkMode ? 'white' : 'black',
+            backgroundColor: isDarkMode ? '#222' : '#eee',
+         }}
+          placeholderTextColor={isDarkMode ? '#aaa' : '#666'}
           placeholder="Enter your name"
           value={userName}
           onChangeText={(text) => setUserName(text)} // Updates state with every keystroke
         />
         <TextInput
-          style={styles.input}
+         style={{
+            color: isDarkMode ? 'white' : 'black',
+            backgroundColor: isDarkMode ? '#222' : '#eee',
+         }}
+          placeholderTextColor={isDarkMode ? '#aaa' : '#666'}
           placeholder="Enter your location"
           value={location}
           onChangeText={(text) => setLocation(text)} // Updates state with every keystroke
@@ -99,7 +113,6 @@ const styles = StyleSheet.create({
   },
 
   submitButtonText: {
-    color: "#212121",
     cursor: "pointer",
     textDecorationLine: "none",
     fontSize: 15,
