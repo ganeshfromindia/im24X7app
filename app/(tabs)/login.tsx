@@ -75,10 +75,41 @@ export default function TabTwoScreen() {
   };
 
   const handleBioMetricAuthentication = async () => {
-    const payload = await sendRequest(
-      `https://d6d0-60-254-0-230.ngrok-free.app/api/users/generatePayLoad`,
-      "GET",
-    );
+    let payload: any;
+    try {
+      payload = await sendRequest(
+        `https://ea92-60-254-0-230.ngrok-free.app/api/users/generatePayLoad`,
+        "GET",
+      ).catch((err: any) => {
+        Alert.alert(
+          "Error during payload generation",
+          "Error during payload generation, please try again",
+          [
+            {
+              text: "Cancel",
+              onPress: () => console.log("Cancel Pressed"),
+            },
+          ],
+        );
+        //console.error("Error during authentication", err);
+        return;
+      });
+      console.log("payload gtry", payload);
+    } catch (err) {
+      Alert.alert(
+        "Error generating payload",
+        "Error generating payload, please try again",
+        [
+          {
+            text: "Cancel",
+            onPress: () => console.log("Cancel Pressed"),
+          },
+        ],
+      );
+      console.error("Error generating payload", err);
+      return;
+    }
+    console.log("payload start", payload);
     let keysAlreadyExist: any;
     let isBioMetricAvailable = await checkBiometrics();
     if (!isBioMetricAvailable) {
@@ -99,18 +130,50 @@ export default function TabTwoScreen() {
 
     if (!keysAlreadyExist) {
       const { publicKey } = await rnBiometrics.createKeys();
+      console.log("publicKey generated ", publicKey);
       keysAlreadyExist = publicKey;
       console.log(publicKey);
-      const response = await sendRequest(
-        `https://d6d0-60-254-0-230.ngrok-free.app/api/users/addPublicKey`,
-        "POST",
-        JSON.stringify({ publicKey: publicKey, userName: userName }),
-        {
-          "Content-Type": "application/json",
-        },
-      );
+      try {
+        const response = await sendRequest(
+          `https://ea92-60-254-0-230.ngrok-free.app/api/users/addPublicKey`,
+          "POST",
+          JSON.stringify({ publicKey: publicKey, userName: userName }),
+          {
+            "Content-Type": "application/json",
+            Accept: "application/json",
+          },
+        ).catch((err: any) => {
+          Alert.alert(
+            "Error during adding public key",
+            "Error during adding public key, please try again",
+            [
+              {
+                text: "Cancel",
+                onPress: () => console.log("Cancel Pressed"),
+              },
+            ],
+          );
+          //console.error("Error during authentication", err);
+          return;
+        });
+      } catch (err) {
+        Alert.alert(
+          "Error adding public key",
+          "Error adding public key, please try again",
+          [
+            {
+              text: "Cancel",
+              onPress: () => console.log("Cancel Pressed"),
+            },
+          ],
+        );
+        console.error("Error adding public key", err);
+        await deleteKeys();
+        return;
+      }
     }
-
+    console.log("payload", payload);
+    payload.payloadId = payload.payloadId.replace(/-/g, "");
     const { success, signature } = await rnBiometrics.createSignature({
       promptMessage: "Sign in",
       payload: payload.payloadId,
@@ -121,7 +184,7 @@ export default function TabTwoScreen() {
       console.log("test payload", payload.payloadId);
       console.log("userName", userName);
       response1 = await sendRequest(
-        `https://d6d0-60-254-0-230.ngrok-free.app/api/users/loginBiometrics`,
+        `https://ea92-60-254-0-230.ngrok-free.app/api/users/loginBiometrics`,
         "POST",
         JSON.stringify({
           signature: signature,
@@ -130,10 +193,25 @@ export default function TabTwoScreen() {
         }),
         {
           "Content-Type": "application/json",
+          Accept: "application/json",
         },
-      );
+      ).catch((err: any) => {
+        Alert.alert(
+          "Error during authentication",
+          "Error during authentication, please try again",
+          [
+            {
+              text: "Cancel",
+              onPress: () => console.log("Cancel Pressed"),
+            },
+          ],
+        );
+        //console.error("Error during authentication", err);
+        return;
+      });
     }
-    if (response1.success) {
+    // console.log("response1", response1);
+    if (response1 && response1.success) {
       Alert.alert("Biometrics  Authentication Successful", "Authorized", [
         {
           text: "Cancel",
