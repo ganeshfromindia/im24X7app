@@ -22,31 +22,29 @@ export default function TabTwoScreen() {
         await rnBiometrics.isSensorAvailable();
 
       if (available && biometryType === BiometryTypes.TouchID) {
-        console.log("TouchID is supported");
-        //         Alert.alert("TouchID is supported", "TouchID is supported", [
-        //           {
-        //             text: "Cancel",
-        //             onPress: () => console.log("Cancel Pressed"),
-        //           },
-        //         ]);
+        // Alert.alert("TouchID is supported", "TouchID is supported", [
+        //   {
+        //     text: "Cancel",
+        //     onPress: () => console.log("Cancel Pressed"),
+        //   },
+        // ]);
         return true;
       } else if (available && biometryType === BiometryTypes.FaceID) {
-        console.log("FaceID is supported");
-        //         Alert.alert("FaceID is supported", "FaceID is supported", [
-        //           {
-        //             text: "Cancel",
-        //             onPress: () => console.log("Cancel Pressed"),
-        //           },
-        //         ]);
+        // Alert.alert("FaceID is supported", "FaceID is supported", [
+        //   {
+        //     text: "Cancel",
+        //     onPress: () => console.log("Cancel Pressed"),
+        //   },
+        // ]);
         return true;
       } else if (available && biometryType === BiometryTypes.Biometrics) {
-        //         Alert.alert("Biometrics  supported", "Biometrics  supported", [
-        //           {
-        //             text: "Cancel",
-        //             onPress: () => console.log("Cancel Pressed"),
-        //           },
-        //         ]);
-        console.log("Biometrics is supported");
+        // Alert.alert("Biometrics  supported", "Biometrics  supported", [
+        //   {
+        //     text: "Cancel",
+        //     onPress: () => console.log("Cancel Pressed"),
+        //   },
+        // ]);
+
         return true;
       } else {
         Alert.alert("Biometrics not supported", "Biometrics not supported", [
@@ -55,7 +53,7 @@ export default function TabTwoScreen() {
             onPress: () => console.log("Cancel Pressed"),
           },
         ]);
-        console.log("Biometrics not supported", error || "");
+
         return false;
       }
     } catch (err) {
@@ -69,7 +67,7 @@ export default function TabTwoScreen() {
           },
         ],
       );
-      console.error("Error checking biometrics available", err);
+
       return false;
     }
   };
@@ -78,7 +76,7 @@ export default function TabTwoScreen() {
     let payload: any;
     try {
       payload = await sendRequest(
-        `https://ea92-60-254-0-230.ngrok-free.app/api/users/generatePayLoad`,
+        `https://608a-115-98-233-83.ngrok-free.app/api/users/generatePayLoad`,
         "GET",
       ).catch((err: any) => {
         Alert.alert(
@@ -91,7 +89,7 @@ export default function TabTwoScreen() {
             },
           ],
         );
-        //console.error("Error during authentication", err);
+
         return;
       });
       console.log("payload gtry", payload);
@@ -106,10 +104,10 @@ export default function TabTwoScreen() {
           },
         ],
       );
-      console.error("Error generating payload", err);
+
       return;
     }
-    console.log("payload start", payload);
+
     let keysAlreadyExist: any;
     let isBioMetricAvailable = await checkBiometrics();
     if (!isBioMetricAvailable) {
@@ -122,20 +120,15 @@ export default function TabTwoScreen() {
     await deleteKeys();
     const { keysExist } = await rnBiometrics.biometricKeysExist();
     keysAlreadyExist = keysExist;
-    if (keysExist) {
-      console.log("Keys exist");
-    } else {
-      console.log("Keys do not exist or were deleted");
-    }
 
     if (!keysAlreadyExist) {
       const { publicKey } = await rnBiometrics.createKeys();
-      console.log("publicKey generated ", publicKey);
       keysAlreadyExist = publicKey;
-      console.log(publicKey);
+
       try {
+        console.log("publicKey front end", publicKey);
         const response = await sendRequest(
-          `https://ea92-60-254-0-230.ngrok-free.app/api/users/addPublicKey`,
+          `https://608a-115-98-233-83.ngrok-free.app/api/users/addPublicKey`,
           "POST",
           JSON.stringify({ publicKey: publicKey, userName: userName }),
           {
@@ -153,10 +146,10 @@ export default function TabTwoScreen() {
               },
             ],
           );
-          //console.error("Error during authentication", err);
+
           return;
         });
-      } catch (err) {
+      } catch (err: any) {
         Alert.alert(
           "Error adding public key",
           "Error adding public key, please try again",
@@ -167,12 +160,12 @@ export default function TabTwoScreen() {
             },
           ],
         );
-        console.error("Error adding public key", err);
+
         await deleteKeys();
         return;
       }
     }
-    console.log("payload", payload);
+
     payload.payloadId = payload.payloadId.replace(/-/g, "");
     const { success, signature } = await rnBiometrics.createSignature({
       promptMessage: "Sign in",
@@ -183,8 +176,9 @@ export default function TabTwoScreen() {
       console.log("test sign", signature);
       console.log("test payload", payload.payloadId);
       console.log("userName", userName);
+      console.log("keysAlreadyExist", keysAlreadyExist);
       response1 = await sendRequest(
-        `https://ea92-60-254-0-230.ngrok-free.app/api/users/loginBiometrics`,
+        `https://608a-115-98-233-83.ngrok-free.app/api/users/loginBiometrics`,
         "POST",
         JSON.stringify({
           signature: signature,
@@ -206,11 +200,11 @@ export default function TabTwoScreen() {
             },
           ],
         );
-        //console.error("Error during authentication", err);
+
         return;
       });
     }
-    // console.log("response1", response1);
+
     if (response1 && response1.success) {
       Alert.alert("Biometrics  Authentication Successful", "Authorized", [
         {
