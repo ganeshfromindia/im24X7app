@@ -92,8 +92,7 @@ export default function TabTwoScreen() {
 
         return;
       });
-      console.log("payload gtry", payload);
-    } catch (err) {
+    } catch (err: any) {
       Alert.alert(
         "Error generating payload",
         "Error generating payload, please try again",
@@ -126,7 +125,6 @@ export default function TabTwoScreen() {
       keysAlreadyExist = publicKey;
 
       try {
-        console.log("publicKey front end", publicKey);
         const response = await sendRequest(
           `https://608a-115-98-233-83.ngrok-free.app/api/users/addPublicKey`,
           "POST",
@@ -173,10 +171,6 @@ export default function TabTwoScreen() {
     });
     let response1;
     if (success) {
-      console.log("test sign", signature);
-      console.log("test payload", payload.payloadId);
-      console.log("userName", userName);
-      console.log("keysAlreadyExist", keysAlreadyExist);
       response1 = await sendRequest(
         `https://608a-115-98-233-83.ngrok-free.app/api/users/loginBiometrics`,
         "POST",
