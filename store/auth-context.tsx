@@ -58,8 +58,8 @@ export const UserProvider = ({ children }: { children: any }) => {
     name: item.name + " " + (index + 1),
   }));
 
-
   const [id, setId] = useState<number | null>(null);
+  const [isLoggedIn, setIsLoggedIn] = useState<boolean | null>(false);
   const [name, setName] = useState<any | null>();
   const [location, setLocation] = useState<number | null>(null);
   const [tag, setTag] = useState<string | null>(null);
@@ -75,16 +75,19 @@ export const UserProvider = ({ children }: { children: any }) => {
     return () => {};
   }, [data]);
 
-  const postUserData = useCallback(
-    async (
+  const login = useCallback(() => {
+    setIsLoggedIn(true);
+    console.log("Logging in...", isLoggedIn);
+  }, []);
 
-      dataPost: any | null
-    ) => {
+  const logout = useCallback(() => {
+    console.log("Logging out...");
+    setIsLoggedIn(false);
+  }, []);
 
-      setData(dataPost);
-    },
-    [],
-  );
+  const postUserData = useCallback(async (dataPost: any | null) => {
+    setData(dataPost);
+  }, []);
   const getUserData = useCallback(async () => {
     return data;
   }, []);
@@ -95,6 +98,9 @@ export const UserProvider = ({ children }: { children: any }) => {
         data: data,
         getUserData: getUserData,
         postUserData: postUserData,
+        isLoggedIn: isLoggedIn,
+        login: login,
+        logout: logout,
       }}
     >
       {children}

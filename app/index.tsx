@@ -9,13 +9,20 @@ import {
 import { ThemedText } from "@/components/themed-text";
 import { ThemedView } from "@/components/themed-view";
 import useHttpClient from "@/hooks/http-hook";
+import { useUser } from "@/store/auth-context";
+import { useRouter } from "expo-router";
 import React, { useState } from "react";
+import { SafeAreaProvider, SafeAreaView } from "react-native-safe-area-context";
+
 import ReactNativeBiometrics, { BiometryTypes } from "react-native-biometrics";
+
 export default function TabTwoScreen() {
+  const { login } = useUser();
   const isDarkMode = useColorScheme() === "dark";
   const { isLoading, error, sendRequest, clearError } = useHttpClient();
   const [userName, setUserName] = useState("");
   const rnBiometrics = new ReactNativeBiometrics();
+  const router = useRouter();
   const checkBiometrics = async () => {
     try {
       const { available, biometryType, error } =
@@ -76,7 +83,7 @@ export default function TabTwoScreen() {
     let payload: any;
     try {
       payload = await sendRequest(
-        `https://608a-115-98-233-83.ngrok-free.app/api/users/generatePayLoad`,
+        `https://1aa1-115-98-232-125.ngrok-free.app/api/users/generatePayLoad`,
         "GET",
       ).catch((err: any) => {
         Alert.alert(
@@ -126,7 +133,7 @@ export default function TabTwoScreen() {
 
       try {
         const response = await sendRequest(
-          `https://608a-115-98-233-83.ngrok-free.app/api/users/addPublicKey`,
+          `https://1aa1-115-98-232-125.ngrok-free.app/api/users/addPublicKey`,
           "POST",
           JSON.stringify({ publicKey: publicKey, userName: userName }),
           {
@@ -172,7 +179,7 @@ export default function TabTwoScreen() {
     let response1;
     if (success) {
       response1 = await sendRequest(
-        `https://608a-115-98-233-83.ngrok-free.app/api/users/loginBiometrics`,
+        `https://1aa1-115-98-232-125.ngrok-free.app/api/users/loginBiometrics`,
         "POST",
         JSON.stringify({
           signature: signature,
@@ -206,6 +213,8 @@ export default function TabTwoScreen() {
           onPress: () => console.log("Cancel Pressed"),
         },
       ]);
+      await login();
+      router.replace("/dashboard");
     } else {
       Alert.alert("Biometrics  Authentication Failed", "Please try again", [
         {
@@ -217,32 +226,40 @@ export default function TabTwoScreen() {
   };
 
   return (
-    <ThemedView style={styles.titleContainer}>
-      <ThemedView style={styles.container}>
-        <TextInput
-          style={{
-            padding: 10,
-            color: isDarkMode ? "white" : "black",
-            backgroundColor: isDarkMode ? "#222" : "#eee",
-          }}
-          placeholderTextColor={isDarkMode ? "#aaa" : "#666"}
-          placeholder="Enter your name"
-          value={userName}
-          onChangeText={(text) => setUserName(text)} // Updates state with every keystroke
-        />
-      </ThemedView>
-      {userName && (
-        <ThemedView style={styles.container1}>
-          <TouchableOpacity onPress={handleBioMetricAuthentication}>
-            <ThemedText
-              style={[styles.button, styles.submitButtonText, styles.container]}
-            >
-              Bio Metric Authentication
-            </ThemedText>
-          </TouchableOpacity>
+    <SafeAreaProvider>
+      <SafeAreaView style={{ flex: 1 }}>
+        <ThemedView style={styles.titleContainer}>
+          <ThemedView style={styles.container}>
+            <TextInput
+              style={{
+                padding: 10,
+                color: isDarkMode ? "white" : "black",
+                backgroundColor: isDarkMode ? "#222" : "#eee",
+              }}
+              placeholderTextColor={isDarkMode ? "#aaa" : "#666"}
+              placeholder="Enter your name"
+              value={userName}
+              onChangeText={(text) => setUserName(text)} // Updates state with every keystroke
+            />
+          </ThemedView>
+          {userName && (
+            <ThemedView style={styles.container1}>
+              <TouchableOpacity onPress={handleBioMetricAuthentication}>
+                <ThemedText
+                  style={[
+                    styles.button,
+                    styles.submitButtonText,
+                    styles.container,
+                  ]}
+                >
+                  Bio Metric Authentication
+                </ThemedText>
+              </TouchableOpacity>
+            </ThemedView>
+          )}
         </ThemedView>
-      )}
-    </ThemedView>
+      </SafeAreaView>
+    </SafeAreaProvider>
   );
 }
 const styles = StyleSheet.create({
